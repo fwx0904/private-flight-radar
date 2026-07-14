@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050907">
+  <title>私人机票雷达 · Flight Radar</title>
+  <meta name="description" content="每小时扫描未来六个月直飞机票，低价命中时第一时间提醒。">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<main class="shell">
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="私人机票雷达首页"><span class="brand-mark"><i></i></span><span><b>FLIGHT/RADAR</b><small>私人机票雷达</small></span></a>
+    <div class="monitor-state"><span class="live-dot"></span><span>Codex 自动监控中</span><span class="divider"></span><span>每小时检查</span></div>
+    <button class="refresh-button" id="refresh" type="button"><span id="refresh-icon">↻</span><span id="refresh-label">刷新状态</span></button>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <p class="eyebrow">PERSONAL FARE INTELLIGENCE</p>
+      <h1>不追航班，<br><em>让低价来找你。</em></h1>
+      <p class="intro">三条航线正在持续扫描。直飞、往返、价格达标才会命中，其余噪音全部过滤。</p>
+      <div class="hero-metrics"><div><strong>3</strong><span>监控航线</span></div><div><strong>2</strong><span>低价命中</span></div><div><strong>1h</strong><span>刷新频率</span></div></div>
+    </div>
+    <div class="radar-panel" aria-label="航线雷达动画">
+      <div class="radar-glow"></div>
+      <div class="radar-grid">
+        <div class="ring ring-one"></div><div class="ring ring-two"></div><div class="cross cross-x"></div><div class="cross cross-y"></div><div class="sweep"></div>
+        <button class="radar-point point-one" data-route="sha-cts" aria-label="查看上海到札幌"><i></i><span>CTS</span></button>
+        <button class="radar-point point-two" data-route="hgh-aat" aria-label="查看杭州到阿勒泰"><i></i><span>AAT</span></button>
+        <button class="radar-point point-three hot" data-route="hgh-kmg" aria-label="查看杭州到昆明"><i></i><span>KMG</span></button>
+        <div class="radar-center"><span>HGH</span><small>BASE</small></div>
+      </div>
+      <div class="radar-caption"><span>SCAN RANGE</span><b>未来 6 个月</b></div>
+    </div>
+  </section>
+
+  <section class="ticker" aria-label="最新低价动态"><span class="ticker-label">LATEST HIT</span><p><b>杭州 → 昆明</b> 往返直飞 ¥1,055，低于目标价 34%</p><span class="ticker-time">价格快照 · <span id="updated">刚刚</span></span></section>
+
+  <section class="workspace">
+    <div class="route-list">
+      <div class="section-heading"><div><p>ROUTE WATCHLIST</p><h2>我的监控航线</h2></div><button id="add-route" type="button">＋ 添加航线</button></div>
+      <div class="route-cards" id="route-cards"></div>
+    </div>
+    <aside class="deal-panel">
+      <div class="deal-head"><div><p>BEST MATCH</p><h2>当前最佳组合</h2></div><span class="signal good" id="deal-signal">价格达标</span></div>
+      <div class="deal-route"><div><strong id="deal-from">HGH</strong><span id="deal-from-city">杭州</span></div><div class="deal-path"><span>DIRECT</span><i>✈</i></div><div><strong id="deal-to">KMG</strong><span id="deal-to-city">昆明</span></div></div>
+      <div class="deal-price"><span id="deal-price-label">两程合计</span><strong><small>¥</small><span id="deal-price">1,055</span></strong><b id="deal-discount">↓ 34%</b></div>
+      <div class="deal-breakdown"><div><span>去程</span><b id="deal-out">¥445</b></div><div><span>回程</span><b id="deal-in">¥610</b></div><div><span>日期</span><b id="deal-dates">09.04 — 09.07</b></div><div><span>行程</span><b id="deal-stay">3天 · 直飞</b></div></div>
+      <a class="book-button" id="deal-link" href="https://a.feizhu.com/1SDlpz" target="_blank" rel="noreferrer"><span id="deal-link-label">查看飞猪价格</span><b>↗</b></a>
+      <p class="fine-print">票价实时浮动，以飞猪下单页面含税价格和行李规则为准。网页显示最近一次查询快照，自动提醒由 Codex 任务执行。</p>
+    </aside>
+  </section>
+
+  <section class="intel-grid">
+    <div class="history-panel"><div class="section-heading compact"><div><p>PRICE SIGNAL</p><h2 id="trend-title">HGH → KMG 价格趋势</h2></div><span class="range-tag">近 12 次扫描</span></div><div class="history-chart"><div class="axis"><span>高</span><span>目标线</span><span>低</span></div><div class="bars" id="trend-bars"><div class="threshold-line"><span id="trend-target">¥1,600</span></div></div></div></div>
+    <div class="calendar-panel"><div class="section-heading compact"><div><p>FARE HEATMAP</p><h2>未来低价密度</h2></div><div class="legend"><i></i>低价 <i></i>偏高</div></div><div class="calendar-days"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-grid" id="calendar"></div><div class="calendar-note"><span class="live-dot"></span>绿色越亮，命中概率越高</div></div>
+  </section>
+
+  <footer><div class="brand mini"><span class="brand-mark"><i></i></span><b>FLIGHT/RADAR</b></div><p>Powered by FlyAI · 飞猪实时价格能力</p><span>MONITOR ONLINE / 03 ROUTES</span></footer>
+  <div class="toast" id="toast" role="status">第一版暂不开放添加航线，可在 Codex 对话中告诉我新路线。</div>
+</main>
+<script src="./app.js"></script>
+</body>
+</html>
