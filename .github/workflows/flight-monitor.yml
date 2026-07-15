@@ -1,0 +1,80 @@
+name: Flight Radar Auto Monitor
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: flight-radar-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  register-route:
+    if: github.event_name == 'issues' && startsWith(github.event.issue.title, '[Flight Monitor]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and save route
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = context.payload.issue.body || '';
+            const match = body.match(/<!-- FLIGHT_MONITOR_CONFIG\s*([\s\S]*?)\s*-->/);
+            if (!match) core.setFailed('没有找到航线配置。请从网页重新提交。');
+            const config = JSON.parse(match[1]);
+            const code = value => /^[A-Z]{3}$/.test(value || '');
+            if (!code(config.originCode) || !code(config.destinationCode)) core.setFailed('机场/城市代码格式错误。');
+            if (config.originCode === config.destinationCode) core.setFailed('出发地和目的地不能相同。');
+            if (!(config.stayMin >= 1 && config.stayMax >= config.stayMin && config.stayMax <= 60)) core.setFailed('停留天数不合法。');
+            if (!(config.targetPrice >= 1 && config.targetPrice <= 100000)) core.setFailed('目标价格不合法。');
+            const path = 'data/routes.json';
+            const routes = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const index = routes.findIndex(item => item.id === config.id);
+            if (index >= 0) routes[index] = config; else routes.push(config);
+            fs.writeFileSync(path, JSON.stringify(routes, null, 2) + '\n');
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: '✅ 航线已加入雷达。配置提交后会立即执行一次查价，之后每小时更新。'});
+            await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, state: 'closed'});
+      - name: Commit route config
+        run: |
+          git config user.name "flight-radar-bot"
+          git config user.email "flight-radar-bot@users.noreply.github.com"
+          git add data/routes.json
+          git diff --cached --quiet || git commit -m "Add flight monitor from issue #${{ github.event.issue.number }}"
+          git push
+
+  monitor:
+    if: github.event_name != 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install FlyAI
+        run: npm install --global @fly-ai/flyai-cli
+      - name: Configure FlyAI
+        env:
+          FLYAI_API_KEY: ${{ secrets.FLYAI_API_KEY }}
+        run: |
+          if [ -z "$FLYAI_API_KEY" ]; then
+            echo "请先在仓库 Settings → Secrets and variables → Actions 添加 FLYAI_API_KEY"
+            exit 1
+          fi
+          flyai config set FLYAI_API_KEY "$FLYAI_API_KEY"
+      - name: Scan every route
+        run: node scripts/monitor.mjs
+      - name: Publish latest prices
+        run: |
+          git config user.name "flight-radar-bot"
+          git config user.email "flight-radar-bot@users.noreply.github.com"
+          git add data/results.json
+          git diff --cached --quiet || git commit -m "Update hourly flight prices"
+          git push
