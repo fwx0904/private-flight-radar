@@ -28,19 +28,19 @@ jobs:
             const fs = require('fs');
             const body = context.payload.issue.body || '';
             const match = body.match(/<!-- FLIGHT_MONITOR_CONFIG\s*([\s\S]*?)\s*-->/);
-            if (!match) core.setFailed('没有找到航线配置。请从网页重新提交。');
+            if (!match) throw new Error('没有找到航线配置。请从网页重新提交。');
             const config = JSON.parse(match[1]);
             const code = value => /^[A-Z]{3}$/.test(value || '');
-            if (!code(config.originCode) || !code(config.destinationCode)) core.setFailed('机场/城市代码格式错误。');
-            if (config.originCode === config.destinationCode) core.setFailed('出发地和目的地不能相同。');
-            if (!(config.stayMin >= 1 && config.stayMax >= config.stayMin && config.stayMax <= 60)) core.setFailed('停留天数不合法。');
-            if (!(config.targetPrice >= 1 && config.targetPrice <= 100000)) core.setFailed('目标价格不合法。');
+            if (!code(config.originCode) || !code(config.destinationCode)) throw new Error('机场/城市代码格式错误。');
+            if (config.originCode === config.destinationCode) throw new Error('出发地和目的地不能相同。');
+            if (!(config.stayMin >= 1 && config.stayMax >= config.stayMin && config.stayMax <= 60)) throw new Error('停留天数不合法。');
+            if (!(config.targetPrice >= 1 && config.targetPrice <= 100000)) throw new Error('目标价格不合法。');
             const path = 'data/routes.json';
             const routes = JSON.parse(fs.readFileSync(path, 'utf8'));
             const index = routes.findIndex(item => item.id === config.id);
             if (index >= 0) routes[index] = config; else routes.push(config);
             fs.writeFileSync(path, JSON.stringify(routes, null, 2) + '\n');
-            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: '✅ 航线已加入雷达。配置提交后会立即执行一次查价，之后每小时更新。'});
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: '✅ 航线已加入雷达，将在下一轮扫描中查价，之后每小时更新。'});
             await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, state: 'closed'});
       - name: Commit route config
         run: |
@@ -71,6 +71,27 @@ jobs:
           flyai config set FLYAI_API_KEY "$FLYAI_API_KEY"
       - name: Scan every route
         run: node scripts/monitor.mjs
+      - name: Send new-record alerts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const configs = JSON.parse(fs.readFileSync('data/routes.json', 'utf8'));
+            const configMap = new Map(configs.map(item => [item.id, item]));
+            const results = JSON.parse(fs.readFileSync('data/results.json', 'utf8'));
+            for (const result of results.routes || []) {
+              if (!result.alert) continue;
+              const config = configMap.get(result.id);
+              if (!config) continue;
+              const alert = result.alert;
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Fare Alert] ${config.originCode} → ${config.destinationCode} ¥${alert.total}`,
+                body: `## 🎯 机票低价命中\n\n- 航线：${config.originCity}（${config.originCode}）→ ${config.destinationCity}（${config.destinationCode}）\n- 往返总价：**¥${alert.total}**\n- 日期：${alert.departDate} → ${alert.returnDate}\n- 条件：直飞，每程不高于 ¥${config.targetPrice}\n\n[打开飞猪查看实时票价](${alert.link})\n\n> 票价可能随时变化，请以下单页含税价格与行李规则为准。`,
+                assignees: [context.repo.owner]
+              });
+            }
       - name: Publish latest prices
         run: |
           git config user.name "flight-radar-bot"
