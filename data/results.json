@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-07-15T00:00:00.000Z",
+  "routes": [
+    {
+      "id": "sha-cts",
+      "lastChecked": "2026-07-15T00:00:00.000Z",
+      "lowest": {"departDate":"2026-09-12","returnDate":"2026-09-26","stayDays":14,"outbound":1402,"inbound":938,"total":2340,"link":"https://a.feizhu.com/0XOqCD"},
+      "alternatives": [{"departDate":"2026-09-13","returnDate":"2026-09-26","stayDays":13,"outbound":1450,"inbound":1000,"total":2450,"link":"https://a.feizhu.com/0XOqCD"}],
+      "history": [{"checkedAt":"2026-07-15T00:00:00.000Z","total":2340}]
+    },
+    {
+      "id": "hgh-aat",
+      "lastChecked": "2026-07-15T00:00:00.000Z",
+      "lowest": null,
+      "alternatives": [],
+      "history": [],
+      "error": "尚未发现符合停留条件的直飞往返组合"
+    },
+    {
+      "id": "hgh-kmg",
+      "lastChecked": "2026-07-15T00:00:00.000Z",
+      "lowest": {"departDate":"2026-09-04","returnDate":"2026-09-07","stayDays":3,"outbound":445,"inbound":610,"total":1055,"link":"https://a.feizhu.com/1SDlpz"},
+      "alternatives": [
+        {"departDate":"2026-09-04","returnDate":"2026-09-09","stayDays":5,"outbound":445,"inbound":610,"total":1055,"link":"https://a.feizhu.com/1SDlpz"},
+        {"departDate":"2026-09-05","returnDate":"2026-09-09","stayDays":4,"outbound":445,"inbound":610,"total":1055,"link":"https://a.feizhu.com/1SDlpz"},
+        {"departDate":"2026-09-05","returnDate":"2026-09-10","stayDays":5,"outbound":465,"inbound":630,"total":1095,"link":"https://a.feizhu.com/1SDlpz"}
+      ],
+      "history": [{"checkedAt":"2026-07-15T00:00:00.000Z","total":1055}]
+    }
+  ]
+}
