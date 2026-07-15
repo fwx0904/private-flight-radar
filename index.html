@@ -20,7 +20,7 @@
     <div class="hero-copy">
       <p class="eyebrow">PERSONAL FARE INTELLIGENCE</p>
       <h1>不追航班，<br><em>让低价来找你。</em></h1>
-      <p class="intro">三条航线正在持续扫描。直飞、往返、价格达标才会命中，其余噪音全部过滤。</p>
+      <p class="intro">你关注的航线正在持续扫描。直飞、往返、价格达标才会命中，其余噪音全部过滤。</p>
       <div class="hero-metrics"><div><strong id="monitor-count">3</strong><span>监控航线</span></div><div><strong id="hit-count">2</strong><span>低价命中</span></div><div><strong>1h</strong><span>刷新频率</span></div></div>
     </div>
     <div class="radar-panel" aria-label="航线雷达动画">
@@ -57,23 +57,23 @@
     </aside>
   </section>
 
-  <section class="intel-grid">
-    <div class="history-panel"><div class="section-heading compact"><div><p>PRICE SIGNAL</p><h2 id="trend-title">HGH → KMG 价格趋势</h2></div><span class="range-tag">近 12 次扫描</span></div><div class="history-chart"><div class="axis"><span>高</span><span>目标线</span><span>低</span></div><div class="bars" id="trend-bars"><div class="threshold-line"><span id="trend-target">¥1,600</span></div></div></div></div>
-    <div class="calendar-panel"><div class="section-heading compact"><div><p>FARE HEATMAP</p><h2>未来低价密度</h2></div><div class="legend"><i></i>低价 <i></i>偏高</div></div><div class="calendar-days"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-grid" id="calendar"></div><div class="calendar-note"><span class="live-dot"></span>绿色越亮，命中概率越高</div></div>
-  </section>
-
   <footer><div class="brand mini"><span class="brand-mark"><i></i></span><b>FLIGHT/RADAR</b></div><p>Powered by FlyAI · 飞猪实时价格能力</p><span>MONITOR ONLINE / <b id="footer-count">03</b> ROUTES</span></footer>
   <div class="route-modal" id="route-modal" aria-hidden="true">
     <button class="modal-backdrop" id="modal-backdrop" aria-label="关闭新增监控"></button>
     <section class="route-sheet" role="dialog" aria-modal="true" aria-labelledby="route-form-title">
       <div class="sheet-head"><div><p>NEW WATCH</p><h2 id="route-form-title">新增航线监控</h2></div><button id="close-route" type="button" aria-label="关闭">×</button></div>
       <form id="route-form">
-        <div class="city-pair">
-          <label><span>出发城市</span><input id="origin" name="origin" list="city-list" placeholder="杭州 / HGH" required autocomplete="off"></label>
+        <div class="city-pair airport-pair">
+          <div class="location-picker">
+            <label><span>出发国家 / 地区</span><select id="origin-country" required></select></label>
+            <label><span>出发城市与机场</span><select id="origin-airport" required></select></label>
+          </div>
           <button id="swap-city" type="button" aria-label="交换出发和到达城市">⇄</button>
-          <label><span>到达城市</span><input id="destination" name="destination" list="city-list" placeholder="昆明 / KMG" required autocomplete="off"></label>
+          <div class="location-picker">
+            <label><span>到达国家 / 地区</span><select id="destination-country" required></select></label>
+            <label><span>到达城市与机场</span><select id="destination-airport" required></select></label>
+          </div>
         </div>
-        <datalist id="city-list"><option value="杭州 HGH"><option value="上海 SHA"><option value="北京 BJS"><option value="广州 CAN"><option value="深圳 SZX"><option value="成都 CTU"><option value="昆明 KMG"><option value="阿勒泰 AAT"><option value="札幌 CTS"><option value="东京 TYO"><option value="大阪 OSA"></datalist>
 
         <fieldset><legend>监控日期</legend><div class="segmented"><label><input type="radio" name="dateMode" value="relative" checked><span>未来一段时间</span></label><label><input type="radio" name="dateMode" value="fixed"><span>指定日期范围</span></label></div></fieldset>
         <div class="form-grid" id="relative-fields"><label><span>从今天起</span><select id="horizon"><option value="30">未来 30 天</option><option value="60">未来 60 天</option><option value="90" selected>未来 90 天</option><option value="180">未来 180 天</option></select></label><label><span>往返停留</span><div class="inline-fields"><input id="stay-min" type="number" min="1" max="30" value="3"><i>至</i><input id="stay-max" type="number" min="1" max="60" value="7"><i>天</i></div></label></div>
