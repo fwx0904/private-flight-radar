@@ -21,7 +21,7 @@
       <p class="eyebrow">PERSONAL FARE INTELLIGENCE</p>
       <h1>不追航班，<br><em>让低价来找你。</em></h1>
       <p class="intro">三条航线正在持续扫描。直飞、往返、价格达标才会命中，其余噪音全部过滤。</p>
-      <div class="hero-metrics"><div><strong>3</strong><span>监控航线</span></div><div><strong>2</strong><span>低价命中</span></div><div><strong>1h</strong><span>刷新频率</span></div></div>
+      <div class="hero-metrics"><div><strong id="monitor-count">3</strong><span>监控航线</span></div><div><strong id="hit-count">2</strong><span>低价命中</span></div><div><strong>1h</strong><span>刷新频率</span></div></div>
     </div>
     <div class="radar-panel" aria-label="航线雷达动画">
       <div class="radar-glow"></div>
@@ -40,7 +40,7 @@
 
   <section class="workspace">
     <div class="route-list">
-      <div class="section-heading"><div><p>ROUTE WATCHLIST</p><h2>我的监控航线</h2></div><button id="add-route" type="button">＋ 添加航线</button></div>
+      <div class="section-heading"><div><p>ROUTE WATCHLIST</p><h2>我的监控航线</h2></div><button id="add-route" type="button">＋ 新增监控</button></div>
       <div class="route-cards" id="route-cards"></div>
     </div>
     <aside class="deal-panel">
@@ -48,6 +48,10 @@
       <div class="deal-route"><div><strong id="deal-from">HGH</strong><span id="deal-from-city">杭州</span></div><div class="deal-path"><span>DIRECT</span><i>✈</i></div><div><strong id="deal-to">KMG</strong><span id="deal-to-city">昆明</span></div></div>
       <div class="deal-price"><span id="deal-price-label">两程合计</span><strong><small>¥</small><span id="deal-price">1,055</span></strong><b id="deal-discount">↓ 34%</b></div>
       <div class="deal-breakdown"><div><span>去程</span><b id="deal-out">¥445</b></div><div><span>回程</span><b id="deal-in">¥610</b></div><div><span>日期</span><b id="deal-dates">09.04 — 09.07</b></div><div><span>行程</span><b id="deal-stay">3天 · 直飞</b></div></div>
+      <div class="similar-block">
+        <div class="similar-head"><div><span>NEAR LOWS</span><b>相近低价日期</b></div><small id="similar-rule">最低价 +10% 内</small></div>
+        <div class="similar-list" id="similar-list"></div>
+      </div>
       <a class="book-button" id="deal-link" href="https://a.feizhu.com/1SDlpz" target="_blank" rel="noreferrer"><span id="deal-link-label">查看飞猪价格</span><b>↗</b></a>
       <p class="fine-print">票价实时浮动，以飞猪下单页面含税价格和行李规则为准。网页显示最近一次查询快照，自动提醒由 Codex 任务执行。</p>
     </aside>
@@ -58,8 +62,31 @@
     <div class="calendar-panel"><div class="section-heading compact"><div><p>FARE HEATMAP</p><h2>未来低价密度</h2></div><div class="legend"><i></i>低价 <i></i>偏高</div></div><div class="calendar-days"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-grid" id="calendar"></div><div class="calendar-note"><span class="live-dot"></span>绿色越亮，命中概率越高</div></div>
   </section>
 
-  <footer><div class="brand mini"><span class="brand-mark"><i></i></span><b>FLIGHT/RADAR</b></div><p>Powered by FlyAI · 飞猪实时价格能力</p><span>MONITOR ONLINE / 03 ROUTES</span></footer>
-  <div class="toast" id="toast" role="status">第一版暂不开放添加航线，可在 Codex 对话中告诉我新路线。</div>
+  <footer><div class="brand mini"><span class="brand-mark"><i></i></span><b>FLIGHT/RADAR</b></div><p>Powered by FlyAI · 飞猪实时价格能力</p><span>MONITOR ONLINE / <b id="footer-count">03</b> ROUTES</span></footer>
+  <div class="route-modal" id="route-modal" aria-hidden="true">
+    <button class="modal-backdrop" id="modal-backdrop" aria-label="关闭新增监控"></button>
+    <section class="route-sheet" role="dialog" aria-modal="true" aria-labelledby="route-form-title">
+      <div class="sheet-head"><div><p>NEW WATCH</p><h2 id="route-form-title">新增航线监控</h2></div><button id="close-route" type="button" aria-label="关闭">×</button></div>
+      <form id="route-form">
+        <div class="city-pair">
+          <label><span>出发城市</span><input id="origin" name="origin" list="city-list" placeholder="杭州 / HGH" required autocomplete="off"></label>
+          <button id="swap-city" type="button" aria-label="交换出发和到达城市">⇄</button>
+          <label><span>到达城市</span><input id="destination" name="destination" list="city-list" placeholder="昆明 / KMG" required autocomplete="off"></label>
+        </div>
+        <datalist id="city-list"><option value="杭州 HGH"><option value="上海 SHA"><option value="北京 BJS"><option value="广州 CAN"><option value="深圳 SZX"><option value="成都 CTU"><option value="昆明 KMG"><option value="阿勒泰 AAT"><option value="札幌 CTS"><option value="东京 TYO"><option value="大阪 OSA"></datalist>
+
+        <fieldset><legend>监控日期</legend><div class="segmented"><label><input type="radio" name="dateMode" value="relative" checked><span>未来一段时间</span></label><label><input type="radio" name="dateMode" value="fixed"><span>指定日期范围</span></label></div></fieldset>
+        <div class="form-grid" id="relative-fields"><label><span>从今天起</span><select id="horizon"><option value="30">未来 30 天</option><option value="60">未来 60 天</option><option value="90" selected>未来 90 天</option><option value="180">未来 180 天</option></select></label><label><span>往返停留</span><div class="inline-fields"><input id="stay-min" type="number" min="1" max="30" value="3"><i>至</i><input id="stay-max" type="number" min="1" max="60" value="7"><i>天</i></div></label></div>
+        <div class="form-grid hidden" id="fixed-fields"><label><span>最早出发</span><input id="date-start" type="date"></label><label><span>最晚出发</span><input id="date-end" type="date"></label></div>
+
+        <div class="form-grid"><label><span>每程目标价</span><div class="money-field"><b>¥</b><input id="target-price" type="number" min="1" value="800" required></div></label><label><span>相近低价范围</span><select id="similar-percent"><option value="5">最低价 +5%</option><option value="10" selected>最低价 +10%</option><option value="15">最低价 +15%</option><option value="20">最低价 +20%</option></select></label></div>
+        <div class="check-row"><label><input id="direct-only" type="checkbox" checked><span>只看直飞</span></label><label><input id="roundtrip" type="checkbox" checked disabled><span>往返机票</span></label><label><input id="notify" type="checkbox" checked><span>命中后通知</span></label></div>
+        <div class="sync-note"><span class="live-dot"></span><p>提交后将保存到 GitHub，并由 FlyAI 每小时自动查价。首次使用需要配置一次 API Key。</p></div>
+        <button class="submit-watch" type="submit"><span>启动自动监控</span><b>→</b></button>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
 </main>
 <script src="./app.js"></script>
 </body>
