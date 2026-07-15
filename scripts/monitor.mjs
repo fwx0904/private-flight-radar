@@ -46,8 +46,8 @@ function scan(config){
   const today=dateString(new Date());
   const depStart=config.dateMode==="fixed"?config.dateStart:addDays(today,1);
   const depEnd=config.dateMode==="fixed"?config.dateEnd:addDays(today,Number(config.horizonDays||90));
-  const origin=config.originCity||config.originCode;
-  const destination=config.destinationCity||config.destinationCode;
+  const origin=config.originAirport?config.originCode:(config.originCity||config.originCode);
+  const destination=config.destinationAirport?config.destinationCode:(config.destinationCity||config.destinationCode);
   const outbound=uniqueByDate(extract(query(origin,destination,depStart,depEnd))).slice(0,6);
   const pairs=[];
   let returnErrors=0;
