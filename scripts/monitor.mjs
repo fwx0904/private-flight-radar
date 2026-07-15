@@ -48,12 +48,18 @@ function scan(config){
   const depEnd=config.dateMode==="fixed"?config.dateEnd:addDays(today,Number(config.horizonDays||90));
   const origin=config.originCity||config.originCode;
   const destination=config.destinationCity||config.destinationCode;
-  const outbound=uniqueByDate(extract(query(origin,destination,depStart,depEnd))).slice(0,12);
+  const outbound=uniqueByDate(extract(query(origin,destination,depStart,depEnd))).slice(0,6);
   const pairs=[];
+  let returnErrors=0;
   for(const out of outbound){
     const returnStart=addDays(out.date,Number(config.stayMin||1));
     const returnEnd=addDays(out.date,Number(config.stayMax||14));
-    const inbound=uniqueByDate(extract(query(destination,origin,returnStart,returnEnd)));
+    let inbound=[];
+    try{inbound=uniqueByDate(extract(query(destination,origin,returnStart,returnEnd)))}catch(error){
+      returnErrors++;
+      console.error(`${config.id} return ${returnStart}..${returnEnd}: ${error.message||error}`);
+      continue;
+    }
     for(const back of inbound){
       const stayDays=daysBetween(out.date,back.date);
       if(stayDays<config.stayMin||stayDays>config.stayMax)continue;
@@ -62,6 +68,7 @@ function scan(config){
   }
   pairs.sort((a,b)=>a.total-b.total||a.departDate.localeCompare(b.departDate));
   const lowest=pairs[0]||null;
+  if(!lowest&&returnErrors>0&&previousMap.get(config.id)?.lowest)throw new Error(`部分回程查询受限（${returnErrors} 次），已保留上次有效结果`);
   const ceiling=lowest?lowest.total*(1+Number(config.similarPercent||10)/100):0;
   const alternatives=pairs.filter((pair,index)=>index>0&&pair.total<=ceiling).slice(0,5);
   const old=previousMap.get(config.id)||{};
