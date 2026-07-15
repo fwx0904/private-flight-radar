@@ -46,12 +46,14 @@ function scan(config){
   const today=dateString(new Date());
   const depStart=config.dateMode==="fixed"?config.dateStart:addDays(today,1);
   const depEnd=config.dateMode==="fixed"?config.dateEnd:addDays(today,Number(config.horizonDays||90));
-  const outbound=uniqueByDate(extract(query(config.originCode,config.destinationCode,depStart,depEnd))).slice(0,12);
+  const origin=config.originCity||config.originCode;
+  const destination=config.destinationCity||config.destinationCode;
+  const outbound=uniqueByDate(extract(query(origin,destination,depStart,depEnd))).slice(0,12);
   const pairs=[];
   for(const out of outbound){
     const returnStart=addDays(out.date,Number(config.stayMin||1));
     const returnEnd=addDays(out.date,Number(config.stayMax||14));
-    const inbound=uniqueByDate(extract(query(config.destinationCode,config.originCode,returnStart,returnEnd)));
+    const inbound=uniqueByDate(extract(query(destination,origin,returnStart,returnEnd)));
     for(const back of inbound){
       const stayDays=daysBetween(out.date,back.date);
       if(stayDays<config.stayMin||stayDays>config.stayMax)continue;
