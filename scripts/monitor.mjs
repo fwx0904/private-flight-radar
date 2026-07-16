@@ -73,20 +73,28 @@ function scan(config){
   const alternatives=pairs.filter((pair,index)=>index>0&&pair.total<=ceiling).slice(0,5);
   const old=previousMap.get(config.id)||{};
   const history=[...(old.history||[]),...(lowest?[{checkedAt:new Date().toISOString(),total:lowest.total}]:[])].slice(-24);
-  const qualifies=Boolean(lowest&&lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice);
-  const isNewRecord=qualifies&&(!old.lastAlertedTotal||lowest.total<old.lastAlertedTotal);
+  const alertDropPercent=Number(config.alertDropPercent||20);
+  const farBelow=Boolean(lowest&&lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice&&lowest.total<=config.targetPrice*2*(1-alertDropPercent/100));
+  const isNewRecord=farBelow&&(!old.lastAlertedTotal||lowest.total<old.lastAlertedTotal);
   const alert=isNewRecord&&config.notify!==false?{createdAt:new Date().toISOString(),total:lowest.total,departDate:lowest.departDate,returnDate:lowest.returnDate,link:lowest.link}:null;
-  return {id:config.id,lastChecked:new Date().toISOString(),lowest,alternatives,history,lastAlertedTotal:isNewRecord?lowest.total:(old.lastAlertedTotal||null),alert,error:lowest?null:"尚未发现符合停留条件的直飞往返组合"};
+  const needsEmail=farBelow&&config.notify!==false&&(!old.lastEmailedTotal||lowest.total<old.lastEmailedTotal);
+  const emailAlert=needsEmail?{createdAt:new Date().toISOString(),total:lowest.total,departDate:lowest.departDate,returnDate:lowest.returnDate,link:lowest.link,discountPercent:Math.round((1-lowest.total/(config.targetPrice*2))*100)}:null;
+  return {id:config.id,lastChecked:new Date().toISOString(),lowest,alternatives,history,lastAlertedTotal:isNewRecord?lowest.total:(old.lastAlertedTotal||null),lastEmailedTotal:old.lastEmailedTotal||null,alert,emailAlert,error:lowest?null:"尚未发现符合停留条件的直飞往返组合"};
 }
 
 const results=[];
-for(const config of configs.filter(item=>item.enabled!==false)){
+for(const config of configs){
+  if(config.enabled===false){
+    const old=previousMap.get(config.id)||{id:config.id,lowest:null,alternatives:[],history:[]};
+    results.push({...old,id:config.id,paused:true,alert:null,emailAlert:null,error:null});
+    continue;
+  }
   try{
     console.log(`Scanning ${config.originCode} -> ${config.destinationCode}`);
     results.push(scan(config));
   }catch(error){
     const old=previousMap.get(config.id)||{id:config.id,lowest:null,alternatives:[],history:[]};
-    results.push({...old,lastChecked:new Date().toISOString(),alert:null,error:`本次扫描失败：${String(error.message||error).slice(0,240)}`});
+    results.push({...old,lastChecked:new Date().toISOString(),alert:null,emailAlert:null,error:`本次扫描失败：${String(error.message||error).slice(0,240)}`});
     console.error(`${config.id}: ${error.message||error}`);
   }
 }
