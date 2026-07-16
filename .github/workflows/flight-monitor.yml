@@ -47,7 +47,6 @@ jobs:
               if (config.originCode === config.destinationCode) throw new Error('出发地和目的地不能相同。');
               if (!(config.stayMin >= 1 && config.stayMax >= config.stayMin && config.stayMax <= 60)) throw new Error('停留天数不合法。');
               if (!(config.targetPrice >= 1 && config.targetPrice <= 100000)) throw new Error('目标价格不合法。');
-              if (!(config.alertDropPercent >= 10 && config.alertDropPercent <= 50)) config.alertDropPercent = 20;
               const index = routes.findIndex(item => item.id === config.id);
               if (index >= 0) { routes[index] = config; message = '✅ 航线配置已更新。'; }
               else { routes.push(config); message = '✅ 航线已加入雷达。'; }
@@ -105,18 +104,6 @@ jobs:
                 assignees: [context.repo.owner]
               });
             }
-      - name: Send extremely low fare emails
-        env:
-          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
-        run: |
-          if [ -z "$SMTP_USERNAME" ] || [ -z "$SMTP_PASSWORD" ] || [ -z "$ALERT_EMAIL" ]; then
-            echo "Email secrets are incomplete; email delivery is paused."
-            exit 0
-          fi
-          npm install --no-save --no-package-lock nodemailer
-          node scripts/send-alerts.mjs
       - name: Publish latest prices
         run: |
           git config user.name "flight-radar-bot"
