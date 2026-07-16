@@ -26,6 +26,7 @@ const byId=id=>document.getElementById(id);
 const money=n=>Number.isFinite(Number(n))?new Intl.NumberFormat("zh-CN").format(Number(n)):"—";
 let routes=[...FALLBACK_ROUTES];
 let activeId="hgh-kmg";
+let editingId=null;
 
 function escapeHtml(value=""){
   return String(value).replace(/[&<>'"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
@@ -44,10 +45,11 @@ function normalizeRoute(config,result={}){
   return {
     id:config.id,from:config.originCode,fromCity:config.originCity,to:config.destinationCode,toCity:config.destinationCity,
     price:pending?null:Number(lowest.total),threshold,dates:pending?"等待首次扫描":`${shortDate(lowest.departDate)} — ${shortDate(lowest.returnDate)}`,
-    stay:pending?`${config.stayMin}–${config.stayMax}天`: `${lowest.stayDays}天`,status:pending?"watch":(lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice?"hit":"watch"),
-    statusLabel:pending?"等待扫描":(lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice?"价格命中":"持续扫描"),
+    stay:pending?`${config.stayMin}–${config.stayMax}天`: `${lowest.stayDays}天`,status:config.enabled===false?"paused":pending?"watch":(lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice?"hit":"watch"),
+    statusLabel:config.enabled===false?"已暂停":pending?"等待扫描":(lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice?"价格命中":"持续扫描"),
     outbound:lowest.outbound??null,inbound:lowest.inbound??null,link:lowest.link||"https://www.fliggy.com/",bars,
-    similarPercent:Number(config.similarPercent||10),alternatives:result.alternatives||[],lastChecked:result.lastChecked,error:result.error
+    departDate:lowest.departDate||null,returnDate:lowest.returnDate||null,stayDays:lowest.stayDays||null,
+    similarPercent:Number(config.similarPercent||10),alertDropPercent:Number(config.alertDropPercent||20),alternatives:result.alternatives||[],lastChecked:result.lastChecked,error:result.error,config:{...config}
   };
 }
 
@@ -81,9 +83,18 @@ function renderCards(){
   byId("route-cards").innerHTML=routes.map(r=>{
     const pending=!r.price;
     const saved=pending?0:Math.max(0,Math.round((1-r.price/r.threshold)*100));
-    return `<button class="route-card ${r.id===activeId?"active":""}" data-card="${escapeHtml(r.id)}" type="button"><div class="route-card-top"><span class="status-pill ${r.status}">${r.statusLabel}</span><span class="more">•••</span></div><div class="airport-line"><div><strong>${escapeHtml(r.from)}</strong><small>${escapeHtml(r.fromCity)}</small></div><div class="flight-line"><span>✈</span></div><div><strong>${escapeHtml(r.to)}</strong><small>${escapeHtml(r.toCity)}</small></div></div><div class="card-price"><span>${pending?"自动任务已创建":"往返最低"}</span><strong><small>${pending?"":"¥"}</small>${pending?"待扫描":money(r.price)}</strong></div><div class="card-meta"><span>${escapeHtml(r.dates)}</span><span>${escapeHtml(r.stay)}</span></div><div class="mini-chart">${r.bars.map(h=>`<i style="height:${h}%"></i>`).join("")}</div><div class="target-row"><span>目标每程 ¥${money(r.threshold/2)}</span>${pending?`<b class="waiting">每小时刷新</b>`:saved>0?`<b>已低 ${saved}%</b>`:`<b class="waiting">高 ¥${money(r.price-r.threshold)}</b>`}</div></button>`;
+    return `<article class="route-card ${r.id===activeId?"active":""} ${r.status==="paused"?"paused":""}" data-card="${escapeHtml(r.id)}" tabindex="0" role="button" aria-label="查看 ${escapeHtml(r.fromCity)} 到 ${escapeHtml(r.toCity)}"><div class="route-card-top"><span class="status-pill ${r.status}">${r.statusLabel}</span><button class="more-button" data-menu-toggle="${escapeHtml(r.id)}" type="button" aria-label="管理 ${escapeHtml(r.fromCity)} 到 ${escapeHtml(r.toCity)}">•••</button></div><div class="route-menu" data-menu="${escapeHtml(r.id)}"><button type="button" data-route-action="edit" data-route-id="${escapeHtml(r.id)}">编辑监控</button><button type="button" data-route-action="${r.status==="paused"?"resume":"pause"}" data-route-id="${escapeHtml(r.id)}">${r.status==="paused"?"恢复监控":"暂停监控"}</button><button class="danger" type="button" data-route-action="delete" data-route-id="${escapeHtml(r.id)}">删除航线</button></div><div class="airport-line"><div><strong>${escapeHtml(r.from)}</strong><small>${escapeHtml(r.fromCity)}</small></div><div class="flight-line"><span>✈</span></div><div><strong>${escapeHtml(r.to)}</strong><small>${escapeHtml(r.toCity)}</small></div></div><div class="card-price"><span>${pending?"自动任务已创建":"往返最低"}</span><strong><small>${pending?"":"¥"}</small>${pending?"待扫描":money(r.price)}</strong></div><div class="card-meta"><span>${escapeHtml(r.dates)}</span><span>${escapeHtml(r.stay)}</span></div><div class="mini-chart">${r.bars.map(h=>`<i style="height:${h}%"></i>`).join("")}</div><div class="target-row"><span>目标每程 ¥${money(r.threshold/2)}</span>${r.status==="paused"?`<b class="waiting">已停止刷新</b>`:pending?`<b class="waiting">每小时刷新</b>`:saved>0?`<b>已低 ${saved}%</b>`:`<b class="waiting">高 ¥${money(r.price-r.threshold)}</b>`}</div></article>`;
   }).join("");
-  document.querySelectorAll("[data-card]").forEach(el=>el.addEventListener("click",()=>selectRoute(el.dataset.card)));
+  document.querySelectorAll("[data-card]").forEach(el=>{
+    el.addEventListener("click",event=>{if(!event.target.closest("button,a"))selectRoute(el.dataset.card)});
+    el.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&!event.target.closest("button")){event.preventDefault();selectRoute(el.dataset.card)}});
+  });
+  document.querySelectorAll("[data-menu-toggle]").forEach(button=>button.addEventListener("click",event=>{
+    event.stopPropagation();
+    const id=button.dataset.menuToggle;
+    document.querySelectorAll("[data-menu]").forEach(menu=>menu.classList.toggle("open",menu.dataset.menu===id&&!menu.classList.contains("open")));
+  }));
+  document.querySelectorAll("[data-route-action]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();handleRouteAction(button.dataset.routeAction,button.dataset.routeId)}));
   byId("monitor-count").textContent=routes.length;
   byId("hit-count").textContent=routes.filter(route=>route.status==="hit").length;
   byId("footer-count").textContent=String(routes.length).padStart(2,"0");
@@ -91,11 +102,23 @@ function renderCards(){
 
 function renderAlternatives(r){
   byId("similar-rule").textContent=`最低价 +${r.similarPercent||10}% 内`;
-  const items=(r.alternatives||[]).slice(0,5);
+  const items=r.price?[{departDate:r.departDate,returnDate:r.returnDate,stayDays:r.stayDays,total:r.price,outbound:r.outbound,inbound:r.inbound,link:r.link,isBest:true},...(r.alternatives||[]).slice(0,5)]:[];
   byId("similar-list").innerHTML=items.length?items.map(item=>{
     const delta=r.price?Math.round((item.total/r.price-1)*100):0;
-    return `<a class="similar-fare" href="${escapeHtml(item.link||r.link)}" target="_blank" rel="noreferrer"><div><span>${shortDate(item.departDate)} — ${shortDate(item.returnDate)}</span><small>${item.stayDays}天 · 去¥${money(item.outbound)} / 回¥${money(item.inbound)}${delta?` · +${delta}%`:" · 同最低价"}</small></div><strong>¥${money(item.total)}</strong></a>`;
-  }).join(""):`<div class="similar-empty">暂未发现同价格带的其他日期，雷达会继续扫描</div>`;
+    return `<tr class="${item.isBest?"best-row":""}"><td class="date-cell">${shortDate(item.departDate)} — ${shortDate(item.returnDate)}</td><td>${item.stayDays}天</td><td class="price-cell">¥${money(item.total)}</td><td class="delta-cell">${item.isBest?`<span class="best-tag">最低</span>`:delta?`+${delta}%`:"同价"}</td><td><a href="${escapeHtml(item.link||r.link)}" target="_blank" rel="noreferrer" aria-label="查看该日期票价">↗</a></td></tr>`;
+  }).join(""):`<tr><td colspan="5" class="similar-empty">暂未发现可比较的日期组合，雷达会继续扫描</td></tr>`;
+}
+
+function adviceFor(r){
+  if(r.status==="paused")return {title:"监控已暂停",copy:"恢复监控后才会继续更新价格和发送极低价邮件。",wait:true};
+  if(!r.price)return {title:"等待首次扫描",copy:"第一轮价格生成后，这里会告诉你现在是否值得购买。",wait:true};
+  const discount=Math.round((r.threshold-r.price)/r.threshold*100);
+  const gate=r.alertDropPercent||20;
+  if(discount>=30)return {title:"究极低价 · 建议尽快买",copy:`比你的往返目标价低 ${discount}%，已经达到极低价邮件提醒标准。`,wait:false};
+  if(discount>=gate)return {title:"很划算 · 值得买",copy:`比目标价低 ${discount}%，达到你设置的极低价提醒门槛（${gate}%）。`,wait:false};
+  if(discount>=10)return {title:"好价 · 可以考虑",copy:`比目标价低 ${discount}%，但尚未达到极低价邮件门槛，不会打扰你。`,wait:false};
+  if(discount>=0)return {title:"刚刚达标 · 可以等等",copy:`只比目标价低 ${discount}%，暂不发送邮件，继续等待更深折扣。`,wait:true};
+  return {title:"价格偏高 · 继续等待",copy:`当前往返价比目标总价高 ¥${money(r.price-r.threshold)}，雷达会继续每小时检查。`,wait:true};
 }
 
 function selectRoute(id){
@@ -108,6 +131,7 @@ function selectRoute(id){
   byId("deal-out").textContent=r.outbound?`¥${money(r.outbound)}`:"待扫描"; byId("deal-in").textContent=r.inbound?`¥${money(r.inbound)}`:"待扫描"; byId("deal-dates").textContent=r.dates; byId("deal-stay").textContent=`${r.stay} · 直飞`;
   byId("deal-link").href=r.link; byId("deal-link-label").textContent=pending?"打开飞猪":"查看飞猪价格"; byId("deal-link").classList.toggle("muted",r.status!=="hit");
   byId("deal-signal").textContent=pending?"等待扫描":r.status==="hit"?"价格达标":"等待降价"; byId("deal-signal").classList.toggle("good",r.status==="hit");
+  const advice=adviceFor(r); byId("advice-title").textContent=advice.title; byId("advice-copy").textContent=advice.copy; byId("buy-advice").classList.toggle("wait",advice.wait);
   renderAlternatives(r);
 }
 
@@ -128,6 +152,41 @@ function populateAirports(countryId,airportId,preferredCode){
 }
 function selectedAirport(id){return AIRPORTS.find(item=>item.code===byId(id).value)}
 
+function setDateMode(mode){
+  const radio=document.querySelector(`input[name="dateMode"][value="${mode}"]`); if(radio)radio.checked=true;
+  const fixed=mode==="fixed"; byId("relative-fields").classList.toggle("hidden",fixed); byId("fixed-fields").classList.toggle("hidden",!fixed);
+}
+function resetRouteForm(){
+  editingId=null; byId("route-form").reset(); byId("route-form-title").textContent="新增航线监控"; byId("submit-watch-label").textContent="启动自动监控";
+  byId("origin-country").value="中国"; populateAirports("origin-country","origin-airport","HGH");
+  byId("destination-country").value="中国"; populateAirports("destination-country","destination-airport","KMG"); setDateMode("relative");
+}
+function editRoute(id){
+  const route=routes.find(item=>item.id===id),config=route?.config;
+  if(!config)return toast("请刷新页面后再编辑这条航线");
+  editingId=id; byId("route-form-title").textContent="编辑航线监控"; byId("submit-watch-label").textContent="保存修改";
+  byId("origin-country").value=config.originCountry||"中国"; populateAirports("origin-country","origin-airport",config.originCode);
+  byId("destination-country").value=config.destinationCountry||"中国"; populateAirports("destination-country","destination-airport",config.destinationCode);
+  setDateMode(config.dateMode||"relative"); byId("horizon").value=String(config.horizonDays||90); byId("stay-min").value=config.stayMin||3; byId("stay-max").value=config.stayMax||7;
+  byId("date-start").value=config.dateStart||""; byId("date-end").value=config.dateEnd||""; byId("target-price").value=config.targetPrice||800; byId("similar-percent").value=String(config.similarPercent||10); byId("alert-percent").value=String(config.alertDropPercent||20);
+  byId("direct-only").checked=config.directOnly!==false; byId("notify").checked=config.notify!==false; setModal(true);
+}
+function managementIssueBody(action,route){
+  const labels={pause:"暂停",resume:"恢复",delete:"删除"};
+  return `<!-- FLIGHT_MONITOR_ACTION\n${JSON.stringify({action,id:route.id})}\n-->\n## ${labels[action]}航线监控\n\n- 航线：${route.fromCity}（${route.from}）→ ${route.toCity}（${route.to}）\n- 操作：${labels[action]}\n\n> 提交本 Issue 后，自动任务会执行操作并关闭本 Issue。`;
+}
+function openManagementIssue(action,id){
+  const route=routes.find(item=>item.id===id); if(!route)return;
+  if(action==="delete"&&!window.confirm(`确定删除 ${route.fromCity} → ${route.toCity} 的监控吗？`))return;
+  const title=`[Flight Monitor] ${action.toUpperCase()} ${route.from} → ${route.to}`;
+  window.open(`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(managementIssueBody(action,route))}`,"_blank","noopener");
+  toast("操作已生成，请在 GitHub 页面确认提交");
+}
+function handleRouteAction(action,id){
+  document.querySelectorAll("[data-menu]").forEach(menu=>menu.classList.remove("open"));
+  if(action==="edit")editRoute(id); else openManagementIssue(action,id);
+}
+
 function issueBody(config){
   const dateText=config.dateMode==="relative"?`未来 ${config.horizonDays} 天`:`${config.dateStart} 至 ${config.dateEnd}`;
   return `<!-- FLIGHT_MONITOR_CONFIG\n${JSON.stringify(config)}\n-->\n## 新增航线监控\n\n- 航线：${config.originCountry} · ${config.originCity} ${config.originAirport}（${config.originCode}）→ ${config.destinationCountry} · ${config.destinationCity} ${config.destinationAirport}（${config.destinationCode}）\n- 出发范围：${dateText}\n- 停留：${config.stayMin}–${config.stayMax} 天\n- 目标：直飞往返，每程不高于 ¥${config.targetPrice}\n- 相近低价：最低价 +${config.similarPercent}% 以内\n\n> 请直接提交本 Issue。自动化会保存配置、关闭 Issue，并从下一次扫描开始显示结果。`;
@@ -135,7 +194,7 @@ function issueBody(config){
 
 document.querySelectorAll("[data-route]").forEach(el=>el.addEventListener("click",()=>selectRoute(el.dataset.route)));
 byId("refresh").addEventListener("click",async()=>{byId("refresh-icon").classList.add("spin");byId("refresh-label").textContent="正在读取";await loadData(true);byId("refresh-icon").classList.remove("spin");byId("refresh-label").textContent="刷新状态"});
-byId("add-route").addEventListener("click",()=>setModal(true));
+byId("add-route").addEventListener("click",()=>{resetRouteForm();setModal(true)});
 byId("close-route").addEventListener("click",()=>setModal(false));
 byId("modal-backdrop").addEventListener("click",()=>setModal(false));
 document.addEventListener("keydown",event=>{if(event.key==="Escape")setModal(false)});
@@ -156,11 +215,14 @@ byId("route-form").addEventListener("submit",event=>{
   if(origin.code===destination.code)return toast("出发和到达机场不能相同");
   if(stayMin>stayMax)return toast("最短停留不能大于最长停留");
   if(dateMode==="fixed"&&(!byId("date-start").value||!byId("date-end").value||byId("date-start").value>byId("date-end").value))return toast("请填写正确的出发日期范围");
-  const config={id:`${origin.code}-${destination.code}-${Date.now().toString(36)}`.toLowerCase(),originCountry:origin.country,originCity:origin.city,originAirport:origin.name,originCode:origin.code,destinationCountry:destination.country,destinationCity:destination.city,destinationAirport:destination.name,destinationCode:destination.code,dateMode,horizonDays:dateMode==="relative"?Number(byId("horizon").value):null,dateStart:dateMode==="fixed"?byId("date-start").value:null,dateEnd:dateMode==="fixed"?byId("date-end").value:null,stayMin,stayMax,targetPrice:Number(byId("target-price").value),similarPercent:Number(byId("similar-percent").value),directOnly:byId("direct-only").checked,notify:byId("notify").checked,enabled:true,createdAt:new Date().toISOString()};
-  const title=`[Flight Monitor] ${origin.code} → ${destination.code}`;
+  const oldConfig=editingId?routes.find(item=>item.id===editingId)?.config:null;
+  const config={id:editingId||`${origin.code}-${destination.code}-${Date.now().toString(36)}`.toLowerCase(),originCountry:origin.country,originCity:origin.city,originAirport:origin.name,originCode:origin.code,destinationCountry:destination.country,destinationCity:destination.city,destinationAirport:destination.name,destinationCode:destination.code,dateMode,horizonDays:dateMode==="relative"?Number(byId("horizon").value):null,dateStart:dateMode==="fixed"?byId("date-start").value:null,dateEnd:dateMode==="fixed"?byId("date-end").value:null,stayMin,stayMax,targetPrice:Number(byId("target-price").value),similarPercent:Number(byId("similar-percent").value),alertDropPercent:Number(byId("alert-percent").value),directOnly:byId("direct-only").checked,notify:byId("notify").checked,enabled:oldConfig?.enabled!==false,createdAt:oldConfig?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+  const title=`[Flight Monitor] ${editingId?"UPDATE ":""}${origin.code} → ${destination.code}`;
   const url=`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(issueBody(config))}`;
-  setModal(false);toast("配置已生成，请在 GitHub 页面确认提交");window.open(url,"_blank","noopener");
+  editingId=null; setModal(false);toast("配置已生成，请在 GitHub 页面确认提交");window.open(url,"_blank","noopener");
 });
+
+document.addEventListener("click",event=>{if(!event.target.closest("[data-menu], [data-menu-toggle]"))document.querySelectorAll("[data-menu]").forEach(menu=>menu.classList.remove("open"))});
 
 populateCountries();
 populateAirports("origin-country","origin-airport","HGH");
