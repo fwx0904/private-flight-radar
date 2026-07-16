@@ -27,27 +27,40 @@ jobs:
           script: |
             const fs = require('fs');
             const body = context.payload.issue.body || '';
-            const match = body.match(/<!-- FLIGHT_MONITOR_CONFIG\s*([\s\S]*?)\s*-->/);
-            if (!match) throw new Error('没有找到航线配置。请从网页重新提交。');
-            const config = JSON.parse(match[1]);
-            const code = value => /^[A-Z]{3}$/.test(value || '');
-            if (!code(config.originCode) || !code(config.destinationCode)) throw new Error('机场/城市代码格式错误。');
-            if (config.originCode === config.destinationCode) throw new Error('出发地和目的地不能相同。');
-            if (!(config.stayMin >= 1 && config.stayMax >= config.stayMin && config.stayMax <= 60)) throw new Error('停留天数不合法。');
-            if (!(config.targetPrice >= 1 && config.targetPrice <= 100000)) throw new Error('目标价格不合法。');
+            const configMatch = body.match(/<!-- FLIGHT_MONITOR_CONFIG\s*([\s\S]*?)\s*-->/);
+            const actionMatch = body.match(/<!-- FLIGHT_MONITOR_ACTION\s*([\s\S]*?)\s*-->/);
+            if (!configMatch && !actionMatch) throw new Error('没有找到航线配置或管理操作。请从网页重新提交。');
             const path = 'data/routes.json';
             const routes = JSON.parse(fs.readFileSync(path, 'utf8'));
-            const index = routes.findIndex(item => item.id === config.id);
-            if (index >= 0) routes[index] = config; else routes.push(config);
+            let message = '';
+            if (actionMatch) {
+              const action = JSON.parse(actionMatch[1]);
+              if (!['pause','resume','delete'].includes(action.action) || !/^[a-z0-9-]+$/.test(action.id || '')) throw new Error('管理操作格式不合法。');
+              const index = routes.findIndex(item => item.id === action.id);
+              if (index < 0) throw new Error('找不到要管理的航线。');
+              if (action.action === 'delete') { routes.splice(index, 1); message = '🗑️ 航线已删除。'; }
+              else { routes[index].enabled = action.action === 'resume'; routes[index].updatedAt = new Date().toISOString(); message = action.action === 'resume' ? '▶️ 航线监控已恢复。' : '⏸️ 航线监控已暂停。'; }
+            } else {
+              const config = JSON.parse(configMatch[1]);
+              const code = value => /^[A-Z]{3}$/.test(value || '');
+              if (!code(config.originCode) || !code(config.destinationCode)) throw new Error('机场代码格式错误。');
+              if (config.originCode === config.destinationCode) throw new Error('出发地和目的地不能相同。');
+              if (!(config.stayMin >= 1 && config.stayMax >= config.stayMin && config.stayMax <= 60)) throw new Error('停留天数不合法。');
+              if (!(config.targetPrice >= 1 && config.targetPrice <= 100000)) throw new Error('目标价格不合法。');
+              if (!(config.alertDropPercent >= 10 && config.alertDropPercent <= 50)) config.alertDropPercent = 20;
+              const index = routes.findIndex(item => item.id === config.id);
+              if (index >= 0) { routes[index] = config; message = '✅ 航线配置已更新。'; }
+              else { routes.push(config); message = '✅ 航线已加入雷达。'; }
+            }
             fs.writeFileSync(path, JSON.stringify(routes, null, 2) + '\n');
-            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: '✅ 航线已加入雷达，将在下一轮扫描中查价，之后每小时更新。'});
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: `${message}\n\n变更已保存，将在下一轮每小时任务中生效。`});
             await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, state: 'closed'});
       - name: Commit route config
         run: |
           git config user.name "flight-radar-bot"
           git config user.email "flight-radar-bot@users.noreply.github.com"
           git add data/routes.json
-          git diff --cached --quiet || git commit -m "Add flight monitor from issue #${{ github.event.issue.number }}"
+          git diff --cached --quiet || git commit -m "Update flight monitors from issue #${{ github.event.issue.number }}"
           git push
 
   monitor:
@@ -92,6 +105,18 @@ jobs:
                 assignees: [context.repo.owner]
               });
             }
+      - name: Send extremely low fare emails
+        env:
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+        run: |
+          if [ -z "$SMTP_USERNAME" ] || [ -z "$SMTP_PASSWORD" ] || [ -z "$ALERT_EMAIL" ]; then
+            echo "Email secrets are incomplete; email delivery is paused."
+            exit 0
+          fi
+          npm install --no-save --no-package-lock nodemailer
+          node scripts/send-alerts.mjs
       - name: Publish latest prices
         run: |
           git config user.name "flight-radar-bot"
