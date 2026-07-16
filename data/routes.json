@@ -17,6 +17,7 @@
     "stayMax": 14,
     "targetPrice": 1500,
     "similarPercent": 10,
+    "alertDropPercent": 20,
     "directOnly": true,
     "notify": true,
     "enabled": true
@@ -39,6 +40,7 @@
     "stayMax": 7,
     "targetPrice": 800,
     "similarPercent": 10,
+    "alertDropPercent": 20,
     "directOnly": true,
     "notify": true,
     "enabled": true
@@ -61,6 +63,7 @@
     "stayMax": 7,
     "targetPrice": 800,
     "similarPercent": 10,
+    "alertDropPercent": 20,
     "directOnly": true,
     "notify": true,
     "enabled": true
