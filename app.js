@@ -49,7 +49,7 @@ function normalizeRoute(config,result={}){
     statusLabel:config.enabled===false?"已暂停":pending?"等待扫描":(lowest.outbound<=config.targetPrice&&lowest.inbound<=config.targetPrice?"价格命中":"持续扫描"),
     outbound:lowest.outbound??null,inbound:lowest.inbound??null,link:lowest.link||"https://www.fliggy.com/",bars,
     departDate:lowest.departDate||null,returnDate:lowest.returnDate||null,stayDays:lowest.stayDays||null,
-    similarPercent:Number(config.similarPercent||10),alertDropPercent:Number(config.alertDropPercent||20),alternatives:result.alternatives||[],lastChecked:result.lastChecked,error:result.error,config:{...config}
+    similarPercent:Number(config.similarPercent||10),alternatives:result.alternatives||[],lastChecked:result.lastChecked,error:result.error,config:{...config}
   };
 }
 
@@ -110,14 +110,13 @@ function renderAlternatives(r){
 }
 
 function adviceFor(r){
-  if(r.status==="paused")return {title:"监控已暂停",copy:"恢复监控后才会继续更新价格和发送极低价邮件。",wait:true};
+  if(r.status==="paused")return {title:"监控已暂停",copy:"恢复监控后才会继续更新价格。",wait:true};
   if(!r.price)return {title:"等待首次扫描",copy:"第一轮价格生成后，这里会告诉你现在是否值得购买。",wait:true};
   const discount=Math.round((r.threshold-r.price)/r.threshold*100);
-  const gate=r.alertDropPercent||20;
-  if(discount>=30)return {title:"究极低价 · 建议尽快买",copy:`比你的往返目标价低 ${discount}%，已经达到极低价邮件提醒标准。`,wait:false};
-  if(discount>=gate)return {title:"很划算 · 值得买",copy:`比目标价低 ${discount}%，达到你设置的极低价提醒门槛（${gate}%）。`,wait:false};
-  if(discount>=10)return {title:"好价 · 可以考虑",copy:`比目标价低 ${discount}%，但尚未达到极低价邮件门槛，不会打扰你。`,wait:false};
-  if(discount>=0)return {title:"刚刚达标 · 可以等等",copy:`只比目标价低 ${discount}%，暂不发送邮件，继续等待更深折扣。`,wait:true};
+  if(discount>=30)return {title:"究极低价 · 建议尽快买",copy:`比你的往返目标价低 ${discount}%，属于难得的低价组合。`,wait:false};
+  if(discount>=20)return {title:"很划算 · 值得买",copy:`比目标价低 ${discount}%，价格优势已经很明显。`,wait:false};
+  if(discount>=10)return {title:"好价 · 可以考虑",copy:`比目标价低 ${discount}%，如果日期合适可以考虑。`,wait:false};
+  if(discount>=0)return {title:"刚刚达标 · 可以等等",copy:`只比目标价低 ${discount}%，可以继续等待更深折扣。`,wait:true};
   return {title:"价格偏高 · 继续等待",copy:`当前往返价比目标总价高 ¥${money(r.price-r.threshold)}，雷达会继续每小时检查。`,wait:true};
 }
 
@@ -168,7 +167,7 @@ function editRoute(id){
   byId("origin-country").value=config.originCountry||"中国"; populateAirports("origin-country","origin-airport",config.originCode);
   byId("destination-country").value=config.destinationCountry||"中国"; populateAirports("destination-country","destination-airport",config.destinationCode);
   setDateMode(config.dateMode||"relative"); byId("horizon").value=String(config.horizonDays||90); byId("stay-min").value=config.stayMin||3; byId("stay-max").value=config.stayMax||7;
-  byId("date-start").value=config.dateStart||""; byId("date-end").value=config.dateEnd||""; byId("target-price").value=config.targetPrice||800; byId("similar-percent").value=String(config.similarPercent||10); byId("alert-percent").value=String(config.alertDropPercent||20);
+  byId("date-start").value=config.dateStart||""; byId("date-end").value=config.dateEnd||""; byId("target-price").value=config.targetPrice||800; byId("similar-percent").value=String(config.similarPercent||10);
   byId("direct-only").checked=config.directOnly!==false; byId("notify").checked=config.notify!==false; setModal(true);
 }
 function managementIssueBody(action,route){
@@ -216,7 +215,7 @@ byId("route-form").addEventListener("submit",event=>{
   if(stayMin>stayMax)return toast("最短停留不能大于最长停留");
   if(dateMode==="fixed"&&(!byId("date-start").value||!byId("date-end").value||byId("date-start").value>byId("date-end").value))return toast("请填写正确的出发日期范围");
   const oldConfig=editingId?routes.find(item=>item.id===editingId)?.config:null;
-  const config={id:editingId||`${origin.code}-${destination.code}-${Date.now().toString(36)}`.toLowerCase(),originCountry:origin.country,originCity:origin.city,originAirport:origin.name,originCode:origin.code,destinationCountry:destination.country,destinationCity:destination.city,destinationAirport:destination.name,destinationCode:destination.code,dateMode,horizonDays:dateMode==="relative"?Number(byId("horizon").value):null,dateStart:dateMode==="fixed"?byId("date-start").value:null,dateEnd:dateMode==="fixed"?byId("date-end").value:null,stayMin,stayMax,targetPrice:Number(byId("target-price").value),similarPercent:Number(byId("similar-percent").value),alertDropPercent:Number(byId("alert-percent").value),directOnly:byId("direct-only").checked,notify:byId("notify").checked,enabled:oldConfig?.enabled!==false,createdAt:oldConfig?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+  const config={id:editingId||`${origin.code}-${destination.code}-${Date.now().toString(36)}`.toLowerCase(),originCountry:origin.country,originCity:origin.city,originAirport:origin.name,originCode:origin.code,destinationCountry:destination.country,destinationCity:destination.city,destinationAirport:destination.name,destinationCode:destination.code,dateMode,horizonDays:dateMode==="relative"?Number(byId("horizon").value):null,dateStart:dateMode==="fixed"?byId("date-start").value:null,dateEnd:dateMode==="fixed"?byId("date-end").value:null,stayMin,stayMax,targetPrice:Number(byId("target-price").value),similarPercent:Number(byId("similar-percent").value),directOnly:byId("direct-only").checked,notify:byId("notify").checked,enabled:oldConfig?.enabled!==false,createdAt:oldConfig?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
   const title=`[Flight Monitor] ${editingId?"UPDATE ":""}${origin.code} → ${destination.code}`;
   const url=`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(issueBody(config))}`;
   editingId=null; setModal(false);toast("配置已生成，请在 GitHub 页面确认提交");window.open(url,"_blank","noopener");
