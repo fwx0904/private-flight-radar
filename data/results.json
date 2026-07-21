@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-21T09:42:18.668Z",
+  "generatedAt": "2026-07-21T12:02:24.305Z",
   "routes": [
     {
       "id": "sha-cts",
-      "lastChecked": "2026-07-21T09:41:56.150Z",
+      "lastChecked": "2026-07-21T12:02:07.299Z",
       "lowest": {
         "departDate": "2026-11-03",
         "returnDate": "2026-11-07",
@@ -11,19 +11,19 @@
         "outbound": 902,
         "inbound": 1038,
         "total": 1940,
-        "link": "https://a.feizhu.com/1D1Lgi",
+        "link": "https://a.feizhu.com/0Juq8r",
         "outboundFlight": "9C8791",
         "inboundFlight": "9C8792"
       },
       "alternatives": [
         {
-          "departDate": "2026-10-24",
+          "departDate": "2026-10-27",
           "returnDate": "2026-11-07",
-          "stayDays": 14,
+          "stayDays": 11,
           "outbound": 1002,
           "inbound": 1038,
           "total": 2040,
-          "link": "https://a.feizhu.com/3quCAW",
+          "link": "https://a.feizhu.com/3ged0b",
           "outboundFlight": "9C8791",
           "inboundFlight": "9C8792"
         },
@@ -34,16 +34,12 @@
           "outbound": 902,
           "inbound": 1138,
           "total": 2040,
-          "link": "https://a.feizhu.com/1D1Lgi",
+          "link": "https://a.feizhu.com/0Juq8r",
           "outboundFlight": "9C8791",
           "inboundFlight": "9C8792"
         }
       ],
       "history": [
-        {
-          "checkedAt": "2026-07-19T06:44:29.368Z",
-          "total": 1935
-        },
         {
           "checkedAt": "2026-07-19T09:18:49.505Z",
           "total": 1935
@@ -135,6 +131,10 @@
         {
           "checkedAt": "2026-07-21T09:41:56.150Z",
           "total": 1940
+        },
+        {
+          "checkedAt": "2026-07-21T12:02:07.299Z",
+          "total": 1940
         }
       ],
       "lastAlertedTotal": 1927,
@@ -143,7 +143,7 @@
     },
     {
       "id": "hgh-aat",
-      "lastChecked": "2026-07-21T09:42:07.222Z",
+      "lastChecked": "2026-07-21T12:02:15.383Z",
       "lowest": {
         "departDate": "2026-07-28",
         "returnDate": "2026-07-30",
@@ -151,7 +151,7 @@
         "outbound": 1060,
         "inbound": 660,
         "total": 1720,
-        "link": "https://a.feizhu.com/2eAIXE",
+        "link": "https://a.feizhu.com/2PQEn0",
         "outboundFlight": "MU9015",
         "inboundFlight": "MU9016"
       },
@@ -163,7 +163,18 @@
           "outbound": 1060,
           "inbound": 660,
           "total": 1720,
-          "link": "https://a.feizhu.com/2eAIXE",
+          "link": "https://a.feizhu.com/2PQEn0",
+          "outboundFlight": "MU9015",
+          "inboundFlight": "MU9016"
+        },
+        {
+          "departDate": "2026-07-28",
+          "returnDate": "2026-08-04",
+          "stayDays": 7,
+          "outbound": 1060,
+          "inbound": 660,
+          "total": 1720,
+          "link": "https://a.feizhu.com/2PQEn0",
           "outboundFlight": "MU9015",
           "inboundFlight": "MU9016"
         },
@@ -174,7 +185,18 @@
           "outbound": 1060,
           "inbound": 660,
           "total": 1720,
-          "link": "https://a.feizhu.com/2EqquI",
+          "link": "https://a.feizhu.com/4DYz8s",
+          "outboundFlight": "MU9015",
+          "inboundFlight": "MU9016"
+        },
+        {
+          "departDate": "2026-07-30",
+          "returnDate": "2026-08-04",
+          "stayDays": 5,
+          "outbound": 1060,
+          "inbound": 660,
+          "total": 1720,
+          "link": "https://a.feizhu.com/4DYz8s",
           "outboundFlight": "MU9015",
           "inboundFlight": "MU9016"
         },
@@ -185,27 +207,12 @@
           "outbound": 1060,
           "inbound": 660,
           "total": 1720,
-          "link": "https://a.feizhu.com/2EqquI",
-          "outboundFlight": "MU9015",
-          "inboundFlight": "MU9016"
-        },
-        {
-          "departDate": "2026-08-04",
-          "returnDate": "2026-08-06",
-          "stayDays": 2,
-          "outbound": 1060,
-          "inbound": 660,
-          "total": 1720,
-          "link": "https://a.feizhu.com/3PjKZ6",
+          "link": "https://a.feizhu.com/4DYz8s",
           "outboundFlight": "MU9015",
           "inboundFlight": "MU9016"
         }
       ],
       "history": [
-        {
-          "checkedAt": "2026-07-19T06:44:37.581Z",
-          "total": 1794
-        },
         {
           "checkedAt": "2026-07-19T09:18:57.713Z",
           "total": 1794
@@ -297,6 +304,10 @@
         {
           "checkedAt": "2026-07-21T09:42:07.222Z",
           "total": 1720
+        },
+        {
+          "checkedAt": "2026-07-21T12:02:15.383Z",
+          "total": 1720
         }
       ],
       "lastAlertedTotal": null,
@@ -305,80 +316,43 @@
     },
     {
       "id": "hgh-kmg",
-      "lastChecked": "2026-07-21T09:42:18.668Z",
+      "lastChecked": "2026-07-21T12:02:24.305Z",
       "lowest": {
-        "departDate": "2026-09-05",
-        "returnDate": "2026-09-09",
-        "stayDays": 4,
+        "departDate": "2026-09-12",
+        "returnDate": "2026-09-19",
+        "stayDays": 7,
         "outbound": 425,
-        "inbound": 610,
-        "total": 1035,
-        "link": "https://a.feizhu.com/4YSKqm",
+        "inbound": 520,
+        "total": 945,
+        "link": "https://a.feizhu.com/4PqNmz",
         "outboundFlight": "KY8236",
-        "inboundFlight": "MU5646"
+        "inboundFlight": "DR6539"
       },
       "alternatives": [
         {
-          "departDate": "2026-09-06",
-          "returnDate": "2026-09-09",
-          "stayDays": 3,
+          "departDate": "2026-09-15",
+          "returnDate": "2026-09-19",
+          "stayDays": 4,
           "outbound": 445,
-          "inbound": 610,
-          "total": 1055,
-          "link": "https://a.feizhu.com/1mRTIF",
-          "outboundFlight": "GJ8881",
-          "inboundFlight": "MU5646"
+          "inbound": 520,
+          "total": 965,
+          "link": "https://a.feizhu.com/3r8mTN",
+          "outboundFlight": "KY8236",
+          "inboundFlight": "DR6539"
         },
         {
-          "departDate": "2026-09-07",
-          "returnDate": "2026-09-09",
-          "stayDays": 2,
+          "departDate": "2026-09-15",
+          "returnDate": "2026-09-22",
+          "stayDays": 7,
           "outbound": 445,
-          "inbound": 610,
-          "total": 1055,
-          "link": "https://a.feizhu.com/3GuOlV",
-          "outboundFlight": "GJ8881",
-          "inboundFlight": "MU5646"
-        },
-        {
-          "departDate": "2026-09-05",
-          "returnDate": "2026-09-07",
-          "stayDays": 2,
-          "outbound": 425,
-          "inbound": 640,
-          "total": 1065,
-          "link": "https://a.feizhu.com/4YSKqm",
+          "inbound": 520,
+          "total": 965,
+          "link": "https://a.feizhu.com/3r8mTN",
           "outboundFlight": "KY8236",
-          "inboundFlight": "GJ8882"
-        },
-        {
-          "departDate": "2026-09-05",
-          "returnDate": "2026-09-08",
-          "stayDays": 3,
-          "outbound": 425,
-          "inbound": 640,
-          "total": 1065,
-          "link": "https://a.feizhu.com/4YSKqm",
-          "outboundFlight": "KY8236",
-          "inboundFlight": "GJ8882"
-        },
-        {
-          "departDate": "2026-09-05",
-          "returnDate": "2026-09-11",
-          "stayDays": 6,
-          "outbound": 425,
-          "inbound": 640,
-          "total": 1065,
-          "link": "https://a.feizhu.com/4YSKqm",
-          "outboundFlight": "KY8236",
-          "inboundFlight": "GJ8882"
+          "inboundFlight": "DR6539"
         }
       ],
       "history": [
-        {
-          "checkedAt": "2026-07-19T06:44:46.450Z",
-          "total": 1055
-        },
         {
           "checkedAt": "2026-07-19T09:19:06.844Z",
           "total": 1055
@@ -470,6 +444,10 @@
         {
           "checkedAt": "2026-07-21T09:42:18.668Z",
           "total": 1035
+        },
+        {
+          "checkedAt": "2026-07-21T12:02:24.305Z",
+          "total": 945
         }
       ],
       "lastAlertedTotal": 945,
