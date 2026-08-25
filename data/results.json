@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-25T14:06:41.411Z",
+  "generatedAt": "2026-08-25T15:07:53.615Z",
   "routes": [
     {
       "id": "sha-cts",
-      "lastChecked": "2026-08-25T14:06:39.353Z",
+      "lastChecked": "2026-08-25T15:07:51.610Z",
       "lowest": {
         "departDate": "2026-10-25",
         "returnDate": "2026-10-31",
@@ -120,7 +120,7 @@
     },
     {
       "id": "hgh-aat",
-      "lastChecked": "2026-08-25T14:06:40.431Z",
+      "lastChecked": "2026-08-25T15:07:52.631Z",
       "lowest": {
         "departDate": "2026-08-27",
         "returnDate": "2026-08-31",
@@ -237,7 +237,7 @@
     },
     {
       "id": "hgh-kmg",
-      "lastChecked": "2026-08-25T14:06:41.411Z",
+      "lastChecked": "2026-08-25T15:07:53.615Z",
       "lowest": {
         "departDate": "2026-09-06",
         "returnDate": "2026-09-09",
