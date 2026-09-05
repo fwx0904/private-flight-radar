@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-05T05:47:53.277Z",
+  "generatedAt": "2026-09-05T10:39:19.814Z",
   "routes": [
     {
       "id": "sha-cts",
-      "lastChecked": "2026-09-05T05:47:36.163Z",
+      "lastChecked": "2026-09-05T10:39:17.827Z",
       "lowest": {
         "departDate": "2026-09-15",
         "returnDate": "2026-09-26",
@@ -172,11 +172,11 @@
       ],
       "lastAlertedTotal": 1098,
       "alert": null,
-      "error": null
+      "error": "本次扫描失败：Command failed: flyai search-flight --origin PVG --destination CTS --dep-date-start 2026-09-06 --dep-date-end 2027-03-04 --journey-type 1 --sort-type 3\nMCP HTTP 402: \nBody: {\"jsonrpc\":\"2.0\",\"id\":\"1\",\"error\":{\"code\":-32603,\"message\":\"Total u"
     },
     {
       "id": "hgh-aat",
-      "lastChecked": "2026-09-05T05:47:44.779Z",
+      "lastChecked": "2026-09-05T10:39:18.799Z",
       "lowest": {
         "departDate": "2026-10-09",
         "returnDate": "2026-10-14",
@@ -301,11 +301,11 @@
       ],
       "lastAlertedTotal": null,
       "alert": null,
-      "error": null
+      "error": "本次扫描失败：Command failed: flyai search-flight --origin HGH --destination AAT --dep-date-start 2026-09-06 --dep-date-end 2027-03-04 --journey-type 1 --sort-type 3\nMCP HTTP 402: \nBody: {\"jsonrpc\":\"2.0\",\"id\":\"1\",\"error\":{\"code\":-32603,\"message\":\"Total u"
     },
     {
       "id": "hgh-kmg",
-      "lastChecked": "2026-09-05T05:47:53.277Z",
+      "lastChecked": "2026-09-05T10:39:19.814Z",
       "lowest": {
         "departDate": "2026-09-08",
         "returnDate": "2026-09-15",
@@ -430,7 +430,7 @@
       ],
       "lastAlertedTotal": 680,
       "alert": null,
-      "error": null
+      "error": "本次扫描失败：Command failed: flyai search-flight --origin HGH --destination KMG --dep-date-start 2026-09-06 --dep-date-end 2027-03-04 --journey-type 1 --sort-type 3\nMCP HTTP 402: \nBody: {\"jsonrpc\":\"2.0\",\"id\":\"1\",\"error\":{\"code\":-32603,\"message\":\"Total u"
     }
   ]
 }
