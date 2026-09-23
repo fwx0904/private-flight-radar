@@ -1,62 +1,40 @@
 {
-  "generatedAt": "2026-09-23T17:06:52.897Z",
+  "generatedAt": "2026-09-23T20:26:10.457Z",
   "routes": [
     {
       "id": "sha-cts",
-      "lastChecked": "2026-09-23T17:06:30.329Z",
+      "lastChecked": "2026-09-23T20:25:44.720Z",
       "lowest": {
         "departDate": "2026-11-17",
         "returnDate": "2026-11-26",
         "stayDays": 9,
-        "outbound": 1151,
-        "inbound": 1142,
-        "total": 2293,
-        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F2Xi5uN",
+        "outbound": 1152,
+        "inbound": 1143,
+        "total": 2295,
+        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F4MXxxq",
         "outboundFlight": "9C8791",
         "inboundFlight": "9C8792"
       },
       "alternatives": [
         {
-          "departDate": "2026-11-01",
-          "returnDate": "2026-11-14",
-          "stayDays": 13,
-          "outbound": 1190,
-          "inbound": 1142,
-          "total": 2332,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0tT9X3",
-          "outboundFlight": "9C8791",
-          "inboundFlight": "9C8792"
-        },
-        {
-          "departDate": "2026-11-10",
-          "returnDate": "2026-11-14",
-          "stayDays": 4,
-          "outbound": 1190,
-          "inbound": 1142,
-          "total": 2332,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3lmxPY",
-          "outboundFlight": "9C8791",
-          "inboundFlight": "9C8792"
-        },
-        {
-          "departDate": "2026-10-31",
-          "returnDate": "2026-11-14",
-          "stayDays": 14,
-          "outbound": 1201,
-          "inbound": 1142,
-          "total": 2343,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3dsWDm",
-          "outboundFlight": "9C8791",
-          "inboundFlight": "9C8792"
-        },
-        {
-          "departDate": "2026-11-19",
+          "departDate": "2026-11-12",
           "returnDate": "2026-11-26",
-          "stayDays": 7,
-          "outbound": 1201,
-          "inbound": 1142,
-          "total": 2343,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3n5y0z",
+          "stayDays": 14,
+          "outbound": 1202,
+          "inbound": 1143,
+          "total": 2345,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F34cNAS",
+          "outboundFlight": "9C8791",
+          "inboundFlight": "9C8792"
+        },
+        {
+          "departDate": "2026-11-15",
+          "returnDate": "2026-11-26",
+          "stayDays": 11,
+          "outbound": 1202,
+          "inbound": 1143,
+          "total": 2345,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F32nNvB",
           "outboundFlight": "9C8791",
           "inboundFlight": "9C8792"
         },
@@ -64,19 +42,26 @@
           "departDate": "2026-11-21",
           "returnDate": "2026-11-26",
           "stayDays": 5,
-          "outbound": 1201,
-          "inbound": 1142,
-          "total": 2343,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F1Og3Aa",
+          "outbound": 1202,
+          "inbound": 1143,
+          "total": 2345,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F1dUQQu",
+          "outboundFlight": "9C8791",
+          "inboundFlight": "9C8792"
+        },
+        {
+          "departDate": "2026-11-17",
+          "returnDate": "2026-12-01",
+          "stayDays": 14,
+          "outbound": 1152,
+          "inbound": 1343,
+          "total": 2495,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F4MXxxq",
           "outboundFlight": "9C8791",
           "inboundFlight": "9C8792"
         }
       ],
       "history": [
-        {
-          "checkedAt": "2026-09-18T11:20:44.562Z",
-          "total": 2343
-        },
         {
           "checkedAt": "2026-09-18T16:27:31.838Z",
           "total": 2343
@@ -168,6 +153,10 @@
         {
           "checkedAt": "2026-09-23T17:06:30.329Z",
           "total": 2293
+        },
+        {
+          "checkedAt": "2026-09-23T20:25:44.720Z",
+          "total": 2295
         }
       ],
       "lastAlertedTotal": 1098,
@@ -176,58 +165,20 @@
     },
     {
       "id": "hgh-aat",
-      "lastChecked": "2026-09-23T17:06:38.727Z",
+      "lastChecked": "2026-09-23T20:25:54.562Z",
       "lowest": {
-        "departDate": "2026-10-05",
+        "departDate": "2026-10-09",
         "returnDate": "2026-10-12",
-        "stayDays": 7,
+        "stayDays": 3,
         "outbound": 780,
         "inbound": 970,
         "total": 1750,
-        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0D2Sk6",
+        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3jI7Y9",
         "outboundFlight": "GJ8081",
         "inboundFlight": "GJ8082"
       },
-      "alternatives": [
-        {
-          "departDate": "2026-10-09",
-          "returnDate": "2026-10-12",
-          "stayDays": 3,
-          "outbound": 780,
-          "inbound": 970,
-          "total": 1750,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0MRfSx",
-          "outboundFlight": "GJ8081",
-          "inboundFlight": "GJ8082"
-        },
-        {
-          "departDate": "2026-10-12",
-          "returnDate": "2026-10-19",
-          "stayDays": 7,
-          "outbound": 780,
-          "inbound": 970,
-          "total": 1750,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0iZmkK",
-          "outboundFlight": "GJ8081",
-          "inboundFlight": "GJ8082"
-        },
-        {
-          "departDate": "2026-10-14",
-          "returnDate": "2026-10-19",
-          "stayDays": 5,
-          "outbound": 780,
-          "inbound": 970,
-          "total": 1750,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3wxzsY",
-          "outboundFlight": "GJ8081",
-          "inboundFlight": "GJ8082"
-        }
-      ],
+      "alternatives": [],
       "history": [
-        {
-          "checkedAt": "2026-09-18T16:27:40.751Z",
-          "total": 1834
-        },
         {
           "checkedAt": "2026-09-18T19:39:46.954Z",
           "total": 2334
@@ -319,6 +270,10 @@
         {
           "checkedAt": "2026-09-23T17:06:38.727Z",
           "total": 1750
+        },
+        {
+          "checkedAt": "2026-09-23T20:25:54.562Z",
+          "total": 1750
         }
       ],
       "lastAlertedTotal": null,
@@ -327,7 +282,7 @@
     },
     {
       "id": "hgh-kmg",
-      "lastChecked": "2026-09-23T17:06:52.897Z",
+      "lastChecked": "2026-09-23T20:26:10.457Z",
       "lowest": {
         "departDate": "2026-10-08",
         "returnDate": "2026-10-14",
@@ -335,7 +290,7 @@
         "outbound": 350,
         "inbound": 400,
         "total": 750,
-        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3zypc8",
+        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F2L4enj",
         "outboundFlight": "8L9560",
         "inboundFlight": "8L9935"
       },
@@ -347,7 +302,7 @@
           "outbound": 350,
           "inbound": 400,
           "total": 750,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F1GH4w3",
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0049RY",
           "outboundFlight": "8L9560",
           "inboundFlight": "8L9935"
         },
@@ -358,7 +313,7 @@
           "outbound": 350,
           "inbound": 400,
           "total": 750,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3jYUZy",
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F39L9OD",
           "outboundFlight": "8L9560",
           "inboundFlight": "8L9935"
         },
@@ -369,7 +324,7 @@
           "outbound": 350,
           "inbound": 429,
           "total": 779,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F11u5E9",
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F4MrMgz",
           "outboundFlight": "JD5127",
           "inboundFlight": "8L9935"
         },
@@ -380,7 +335,7 @@
           "outbound": 350,
           "inbound": 429,
           "total": 779,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3zypc8",
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F2L4enj",
           "outboundFlight": "8L9560",
           "inboundFlight": "8L9935"
         },
@@ -391,16 +346,12 @@
           "outbound": 350,
           "inbound": 429,
           "total": 779,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F1GH4w3",
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0049RY",
           "outboundFlight": "8L9560",
           "inboundFlight": "8L9935"
         }
       ],
       "history": [
-        {
-          "checkedAt": "2026-09-18T22:37:10.607Z",
-          "total": 890
-        },
         {
           "checkedAt": "2026-09-19T01:13:23.470Z",
           "total": 890
@@ -491,6 +442,10 @@
         },
         {
           "checkedAt": "2026-09-23T17:06:52.896Z",
+          "total": 750
+        },
+        {
+          "checkedAt": "2026-09-23T20:26:10.457Z",
           "total": 750
         }
       ],
