@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-20T21:10:19.175Z",
+  "generatedAt": "2026-11-21T02:21:24.669Z",
   "routes": [
     {
       "id": "sha-cts",
-      "lastChecked": "2026-11-20T21:10:08.531Z",
+      "lastChecked": "2026-11-21T02:21:11.391Z",
       "lowest": null,
       "alternatives": [],
       "history": [
@@ -110,7 +110,7 @@
     },
     {
       "id": "hgh-aat",
-      "lastChecked": "2026-11-20T21:10:11.240Z",
+      "lastChecked": "2026-11-21T02:21:15.035Z",
       "lowest": null,
       "alternatives": [],
       "history": [
@@ -217,80 +217,54 @@
     },
     {
       "id": "hgh-kmg",
-      "lastChecked": "2026-11-20T21:10:19.175Z",
+      "lastChecked": "2026-11-21T02:21:24.669Z",
       "lowest": {
         "departDate": "2026-11-24",
         "returnDate": "2026-11-27",
         "stayDays": 3,
-        "outbound": 450,
+        "outbound": 350,
         "inbound": 350,
-        "total": 800,
-        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F12yu2f",
-        "outboundFlight": "GJ8881",
+        "total": 700,
+        "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3QKbTk",
+        "outboundFlight": "JD5517",
         "inboundFlight": "JD5158"
       },
       "alternatives": [
         {
-          "departDate": "2026-11-28",
-          "returnDate": "2026-12-04",
-          "stayDays": 6,
-          "outbound": 470,
-          "inbound": 350,
-          "total": 820,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F1AYVAs",
-          "outboundFlight": "MU5836",
-          "inboundFlight": "JD5158"
-        },
-        {
-          "departDate": "2026-12-03",
-          "returnDate": "2026-12-07",
-          "stayDays": 4,
-          "outbound": 480,
-          "inbound": 350,
-          "total": 830,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F0PfsBN",
-          "outboundFlight": "MU5655",
-          "inboundFlight": "JD5158"
-        },
-        {
           "departDate": "2026-11-24",
           "returnDate": "2026-12-01",
           "stayDays": 7,
-          "outbound": 450,
+          "outbound": 350,
           "inbound": 390,
-          "total": 840,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F12yu2f",
-          "outboundFlight": "GJ8881",
+          "total": 740,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3QKbTk",
+          "outboundFlight": "JD5517",
           "inboundFlight": "DR6539"
-        },
-        {
-          "departDate": "2026-12-01",
-          "returnDate": "2026-12-04",
-          "stayDays": 3,
-          "outbound": 499,
-          "inbound": 350,
-          "total": 849,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3AcK0l",
-          "outboundFlight": "8L9936",
-          "inboundFlight": "JD5158"
         },
         {
           "departDate": "2026-11-24",
           "returnDate": "2026-11-26",
           "stayDays": 2,
-          "outbound": 450,
+          "outbound": 350,
           "inbound": 400,
-          "total": 850,
-          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F12yu2f",
-          "outboundFlight": "GJ8881",
+          "total": 750,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3QKbTk",
+          "outboundFlight": "JD5517",
           "inboundFlight": "JD5518"
+        },
+        {
+          "departDate": "2026-11-24",
+          "returnDate": "2026-11-28",
+          "stayDays": 4,
+          "outbound": 350,
+          "inbound": 408,
+          "total": 758,
+          "link": "https://router.feizhu.com/multi/webview?url=https%3A%2F%2Frouter.feizhu.com%2Fws%2F3QKbTk",
+          "outboundFlight": "JD5517",
+          "inboundFlight": "GJ8882"
         }
       ],
       "history": [
-        {
-          "checkedAt": "2026-11-13T22:41:02.584Z",
-          "total": 834
-        },
         {
           "checkedAt": "2026-11-14T03:20:55.995Z",
           "total": 750
@@ -382,6 +356,10 @@
         {
           "checkedAt": "2026-11-20T21:10:19.175Z",
           "total": 800
+        },
+        {
+          "checkedAt": "2026-11-21T02:21:24.669Z",
+          "total": 700
         }
       ],
       "lastAlertedTotal": 578,
